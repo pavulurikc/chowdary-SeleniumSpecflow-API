@@ -22,11 +22,14 @@ namespace Chowdary.Pages
             // maximize the browser
             driver.Manage().Window.Maximize();
 
+            //Populate Loging Page test data Collection
+            ExcelLibHelpers.PopulateInCollection(@"C:\Users\myfri\Source\Repos\pavulurikc\chowdary\Chowdary\TestData\TestData.xls", "LoginPage");
+
             // identify username and enter username value
-            driver.FindElement(By.Id("UserName")).SendKeys("hari");
+            driver.FindElement(By.Id("UserName")).SendKeys(ExcelLibHelpers.ReadData(2,"UserName"));
 
             // identify password and enter password
-            driver.FindElement(By.Id("Password")).SendKeys("123123");
+            driver.FindElement(By.Id("Password")).SendKeys(ExcelLibHelpers.ReadData(2,"Password"));
 
             // identify login button and click
             driver.FindElement(By.XPath("//*[@id='loginForm']/form/div[3]/input[1]")).Click();

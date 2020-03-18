@@ -1,4 +1,5 @@
 ﻿using Chowdary.Utilities;
+using NUnit.Framework;
 using OpenQA.Selenium;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,14 @@ namespace Chowdary.Pages
             //Identify create New button and click
             driver.FindElement(By.XPath("//*[@id='container']/p/a")).Click();
 
+            //Populate Loging Page test data Collection
+            ExcelLibHelpers.PopulateInCollection(@"C:\Users\myfri\Source\Repos\pavulurikc\chowdary\Chowdary\TestData\TestData.xls", "TMPage");
+
             //enter a code field
-            driver.FindElement(By.XPath("//*[@id='Code']")).SendKeys("100");
+            driver.FindElement(By.XPath("//*[@id='Code']")).SendKeys(ExcelLibHelpers.ReadData(2, "Code"));
 
             //cnter a description field
-            driver.FindElement(By.XPath("//*[@id='Description']")).SendKeys("abc");
+            driver.FindElement(By.XPath("//*[@id='Description']")).SendKeys(ExcelLibHelpers.ReadData(2, "Description"));
 
             //enter a save field
             driver.FindElement(By.XPath("//*[@id='SaveButton']")).Click();
@@ -31,19 +35,23 @@ namespace Chowdary.Pages
             //Goto last page
             driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span")).Click();
 
-            //Verify if the created time and material record is present.
+            Assert.That(driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]")).Text, Is.EqualTo("100"));
+
+
+            ////Verify if the created time and material record is present.
             
-            if (driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]")).Text == "100")
-            {
-                Console.WriteLine("TM created successfully, test passed");
-            }
-            else
-            {
-                Console.WriteLine("test failed");
+            //if (driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[1]")).Text == "100")
+            //{
+                
+            //    Console.WriteLine("TM created successfully, test passed");
+            //}
+            //else
+            //{
+            //    Console.WriteLine("test failed");
             }
 
 
-            }
+            //}
 
         public void EditTM(IWebDriver driver) 
         {
@@ -51,44 +59,70 @@ namespace Chowdary.Pages
             driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span")).Click();
             driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[1]")).Click();
 
-            //Verify if the edit time and material record is present.
-            if (driver.FindElement(By.XPath("//*[@id='container']/h2")).Text == "Time and Materials")
-            {
-                Console.WriteLine("TM edited successfully, test passed");   
-            }
-            else
-            {
-                Console.WriteLine("test failed");
-            }
-        }
+            Assert.That(driver.FindElement(By.XPath("//*[@id='container']/h2")).Text, Is.EqualTo("Time and Materials"));
 
-        public void DeleteTM(IWebDriver driver)
-        {
-            //To click on save button
-            //driver.FindElement(By.XPath("//*[@id='SaveButton']")).Click();
-
-            //To click on Last page button
-            //driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span")).Click();
-
-            Thread.Sleep(2000);
-
-            string recordCount = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/span[2]")).Text;
-
-            Console.WriteLine(recordCount);
-
-
-            //driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[2]")).Click();
-            //driver.SwitchTo().Alert().Accept();
-
-            ////Verify if the created time and material record is present.
-            //if (driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]")).Text == "100")
+            ////Verify if the edit time and material record is present.
+            //if (driver.FindElement(By.XPath("//*[@id='container']/h2")).Text == "Time and Materials")
             //{
-            //    Console.WriteLine("TM deleted successfully, test passed");
+            //    Console.WriteLine("TM edited successfully, test passed");   
             //}
             //else
             //{
             //    Console.WriteLine("test failed");
             //}
         }
+
+        public void DeleteTM(IWebDriver driver)
+        {
+
+            //{
+            //    Thread.Sleep(4000);
+            //    string countBeforeDelete = driver.FindElement(By.XPath(".//*[@data-role='pager']")).Text.Remove(0, 150);
+            //    Console.WriteLine(countBeforeDelete);
+            //}
+
+            //To click on Administration 
+            driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/a")).Click();
+
+            //To click on Time & Materials
+            driver.FindElement(By.XPath("/html/body/div[3]/div/div/ul/li[5]/ul/li[3]/a")).Click();
+
+            Thread.Sleep(2000);
+
+            //To click on Last page button
+            driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/a[4]/span")).Click();
+
+            String value = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/span[2]")).GetAttribute("Value");
+            Console.WriteLine(value);
+
+            // To click on Delete button
+            driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[3]/table/tbody/tr[last()]/td[5]/a[2]")).Click();
+
+            //To accept the pop-up window
+            driver.SwitchTo().Alert().Accept();
+
+            //string beforeDel = driver.FindElement(By.XPath("//*[@id='tmsGrid']/div[4]/span[2]")).Text.Remove(0, 9);
+            //Console.WriteLine(beforeDel);
+            //string numberBefore = beforeDel.Remove(beforeDel.Length - 5);
+            //Console.WriteLine(numberBefore);
+
+
+            //IList<IWebElement> totalno= driver.FindElements(By.XPath("//*[@id='tmsGrid']/div[2]/div/table/thead/tr/th[1]/a"));
+            // Console.WriteLine("Total Counts: " + totalno.Count);
+            // Console.ReadKey();
+
+            // //for(int i=0;i<totalno.Count;i++)
+            // //{
+            // //    Console.WriteLine(totalno[i].)
+            // //}
+
+
+
+
+
+
+
+        }
     }
 }
+
